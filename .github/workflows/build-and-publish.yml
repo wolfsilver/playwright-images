@@ -23,6 +23,10 @@ env:
 jobs:
   build-test-push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
     strategy:
       matrix:
         base: [bookworm, ubi9]
@@ -89,6 +93,7 @@ jobs:
           echo "✅ ${{ matrix.base }} tests passed"
 
       - name: Push ${{ matrix.base }} images to GitHub Container Registry
+        if: github.event_name != 'pull_request'
         run: |
           VERSION="${{ steps.version.outputs.version }}"
 
