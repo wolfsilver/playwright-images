@@ -67,9 +67,9 @@ jobs:
 
           # Add --latest flag only for bookworm
           if [ "${{ matrix.base }}" == "bookworm" ]; then
-            CONTAINER_ENGINE=docker ./build.sh --base ${{ matrix.base }} --playwright-version "${VERSION}" --latest --repo "${{ env.IMAGE_NAME }}"
+            CONTAINER_ENGINE=docker ./build.sh --base ${{ matrix.base }} --playwright-version "${VERSION}" --latest --repo "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
           else
-            CONTAINER_ENGINE=docker ./build.sh --base ${{ matrix.base }} --playwright-version "${VERSION}" --repo "${{ env.IMAGE_NAME }}"
+            CONTAINER_ENGINE=docker ./build.sh --base ${{ matrix.base }} --playwright-version "${VERSION}" --repo "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
           fi
 
           echo "✅ ${{ matrix.base }} images built successfully"
@@ -100,6 +100,6 @@ jobs:
           echo "🚀 Pushing ${{ matrix.base }} images to GitHub Container Registry..."
 
           # Push all tags for this base
-          docker images --format "{{.Repository}}:{{.Tag}}" | grep "${{ env.IMAGE_NAME }}:${{ matrix.base }}" | xargs -I {} docker push {}
+          docker images --format "{{.Repository}}:{{.Tag}}" | grep "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.base }}" | xargs -I {} docker push {}
 
           echo "✅ ${{ matrix.base }} images pushed successfully"
